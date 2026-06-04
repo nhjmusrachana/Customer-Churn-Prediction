@@ -2,6 +2,7 @@ import streamlit as st
 import joblib
 import pandas as pd
 import os
+import matplotlib.pyplot as plt
 
 # =========================
 # PAGE CONFIG
@@ -35,21 +36,6 @@ st.markdown("""
     text-align: center;
     color: #AAAAAA;
     font-size: 18px;
-}
-
-.metric-card {
-    background: #1E293B;
-    padding: 20px;
-    border-radius: 15px;
-    text-align: center;
-}
-
-.result-card {
-    padding: 25px;
-    border-radius: 15px;
-    text-align: center;
-    font-size: 24px;
-    font-weight: bold;
 }
 
 </style>
@@ -224,7 +210,46 @@ if st.button("🚀 Predict Churn", use_container_width=True):
             f"{churn_probability:.2f}%"
         )
 
+    # =========================
+    # CHARTS
+    # =========================
+
     st.write("")
+
+    st.subheader("📊 Prediction Chart")
+
+    chart_data = pd.DataFrame(
+        {
+            "Probability": [
+                stay_probability,
+                churn_probability
+            ]
+        },
+        index=[
+            "Stay",
+            "Churn"
+        ]
+    )
+
+    st.bar_chart(chart_data)
+
+    st.subheader("🥧 Probability Distribution")
+
+    fig, ax = plt.subplots(figsize=(5, 5))
+
+    ax.pie(
+        [stay_probability, churn_probability],
+        labels=["Stay", "Churn"],
+        autopct="%1.1f%%"
+    )
+
+    st.pyplot(fig)
+
+    st.write("")
+
+    # =========================
+    # CUSTOMER DETAILS
+    # =========================
 
     st.subheader("📋 Customer Details")
 
@@ -254,7 +279,7 @@ st.divider()
 st.markdown(
 """
 <center>
-Built with ❤️ using Streamlit, Scikit-Learn & Python
+Built with ❤️ using Streamlit, Pandas, Scikit-Learn & Python
 </center>
 """,
 unsafe_allow_html=True
